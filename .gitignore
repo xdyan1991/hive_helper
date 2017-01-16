@@ -1,4 +1,4 @@
 .idea/*
 *.md
 .DS_Store
-.sql
+*.sql
