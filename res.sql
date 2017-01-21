@@ -1,7 +1,7 @@
 
     select
-        coalesce(t_c.server_id,t_j.server_id,t_r.server_id,NULL) as server_id,
-coalesce(t_c.country,t_j.country,t_r.country,NULL) as country,
+        coalesce(t_c.sv,t_j.sv,t_r.sv,NULL) as sv,
+coalesce(t_c.slot,t_j.slot,t_r.slot,NULL) as slot,
         t_r.all_req as all_req,
         t_r.all_req_dau as all_req_dau,
         t_j.all_imp as all_imp,
@@ -40,7 +40,7 @@ coalesce(t_c.country,t_j.country,t_r.country,NULL) as country,
         t_c.nature_payout as nature_payout
     from (
     (select
-        server_id,country,
+        sv,slot,
         count(*) as all_conv,
         sum(payout) as all_payout,
         count(
@@ -70,12 +70,12 @@ coalesce(t_c.country,t_j.country,t_r.country,NULL) as country,
     from
         ssp_log.conversion
     where
-        pdate = '20170115' and ( server_id = 'xpmt' or server_id = 'dpmt' )
-    group by server_id,country
+        pdate = '20170116' and pn = 'com.qihoo.security'
+    group by sv,slot
     ) t_c
     full outer join (
     select
-        server_id,country,
+        sv,slot,
         count(server_id) as all_req,
         count(distinct(user_id)) as all_req_dau,
         count(
@@ -105,14 +105,14 @@ coalesce(t_c.country,t_j.country,t_r.country,NULL) as country,
     from
         ssp_log.request
     where
-        pdate = '20170115' and ( server_id = 'xpmt' or server_id = 'dpmt' )
+        pdate = '20170116' and pn = 'com.qihoo.security'
     group by
-        server_id,country
+        sv,slot
     )t_r
-    on (t_c.server_id=t_r.server_id and t_c.country=t_r.country)
+    on (t_c.sv=t_r.sv and t_c.slot=t_r.slot)
     full outer join (
     select
-        server_id,country,
+        sv,slot,
         count(
             case when imp_recv_ts!='' then imp_recv_ts else null end
         ) as all_imp,
@@ -164,9 +164,9 @@ coalesce(t_c.country,t_j.country,t_r.country,NULL) as country,
     from
         ssp_log.joined
     where
-        pdate = '20170115' and ( server_id = 'xpmt' or server_id = 'dpmt' )
+        pdate = '20170116' and pn = 'com.qihoo.security' and fake!='1'
     group by
-        server_id,country
+        sv,slot
     ) t_j
-    on (t_r.server_id=t_j.server_id and t_r.country=t_j.country)
+    on (t_r.sv=t_j.sv and t_r.slot=t_j.slot)
     )

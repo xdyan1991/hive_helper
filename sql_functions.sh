@@ -167,12 +167,12 @@ function funnel_with_request {
     from
         ssp_log.joined
     where
-        ${condition_str}
+        ${condition_str} and fake!='1'
     group by
         ${keys}
     ) t_j
     on ($(gen_on_cond ${keys} 't_r,t_j'))
-    )"
+    );"
 }
 
 function funnel_without_request {
@@ -293,12 +293,12 @@ function funnel_without_request {
     from
         ssp_log.joined
     where
-        ${condition_str}
+        ${condition_str} and fake!='1'
     group by
         ${keys}
     ) t_j
     on ($(gen_on_cond ${keys} 't_c,t_j'))
-    )"
+    );"
 }
 
 function funnel_full {
@@ -435,7 +435,7 @@ function funnel_full {
     from
         ssp_log.joined
     where
-        ${condition_str}
+        ${condition_str} and fake!='1'
     group by
         ${all_keys}
     ) t_j
@@ -477,7 +477,7 @@ function funnel_full {
         ${wild_keys}
     )t_r
     on ($(gen_on_cond ${wild_keys} 't_j,t_r'))
-    )"
+    );"
 }
 
 function gen_select_head_key {
