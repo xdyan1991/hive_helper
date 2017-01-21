@@ -1,5 +1,5 @@
 .idea/*
 *.md
 *.DS_Store
-*.sql
+res.sql
 test*
